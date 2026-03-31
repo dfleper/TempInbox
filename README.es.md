@@ -5,6 +5,8 @@
   <img src="./assets/logo.png" alt="TempInbox Logo" width="300">
 </div>
 
+<a href="README.md"><img src="./assets/en.png" alt="English"></a>
+
 # TempInbox
 
 TempInbox es un sencillo buzón de correo electrónico temporal creado con HTML5, CSS3 y JavaScript, que utiliza la API de FreeCustom Email para recibir rápidamente correos electrónicos desechables.

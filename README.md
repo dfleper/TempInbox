@@ -5,6 +5,8 @@
   <img src="./assets/logo.png" alt="TempInbox Logo" width="300">
 </div>
 
+<a href="README.es.md"><img src="./assets/sp.png" alt="Spanish"></a>
+
 # TempInbox
 
 TempInbox is a simple temporary email inbox built with HTML5, CSS3 and JavaScript, powered by the FreeCustom Email API for quick disposable email reception.
