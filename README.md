@@ -7,10 +7,10 @@
 
 <p align="center">
   <a href="README.es.md">
-    <img src="./assets/sp.png" alt="Spanish" width="32">
+    <img src="./assets/sp.png" alt="Spanish" width="32" title="Spanish">
   </a>
   <a href="README.md">
-    <img src="./assets/en.png" alt="English" width="32">
+    <img src="./assets/en.png" alt="English" width="32" title="English">
   </a>
 </p>
 
