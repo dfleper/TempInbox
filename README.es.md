@@ -6,10 +6,10 @@
 </div>
 
 <p align="center">
-  <a href="README.es.md">
+  <a href="README.md">
     <img src="./assets/en.png" alt="English" width="32" title="English">
   </a>
-  <a href="README.md">
+  <a href="README.es.md">
     <img src="./assets/sp.png" alt="Spanish" width="32" title="Spanish">
   </a>
 </p>
