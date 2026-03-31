@@ -5,7 +5,14 @@
   <img src="./assets/logo.png" alt="TempInbox Logo" width="300">
 </div>
 
-<a href="README.es.md"><img src="./assets/sp.png" alt="Spanish"></a>
+<p align="center">
+  <a href="README.es.md">
+    <img src="./assets/sp.png" alt="Spanish" width="32">
+  </a>
+  <a href="README.md">
+    <img src="./assets/en.png" alt="English" width="32">
+  </a>
+</p>
 
 # TempInbox
 
