@@ -7,7 +7,7 @@
 
 # TempInbox
 
-TempInbox is a simple temporary email inbox built with HTML5, CSS3 and JavaScript, powered by the FreeCustom Email API for quick disposable email reception.
+TempInbox es un sencillo buzón de correo electrónico temporal creado con HTML5, CSS3 y JavaScript, que utiliza la API de FreeCustom Email para recibir rápidamente correos electrónicos desechables.
 
 ---
 
