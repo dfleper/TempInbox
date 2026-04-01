@@ -7,7 +7,7 @@ export const getAccount = async () => {
       Authorization: `Bearer ${token}`,
     },
   });
-
+  
   if (!response.ok) {
     throw new Error(`HTTP Error: ${response.status}`);
   }

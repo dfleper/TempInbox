@@ -5,3 +5,7 @@ body {
   font-weight: 300;
   font-style: normal;
 }
+
+#monthLimit {
+  font-size: small;
+}
