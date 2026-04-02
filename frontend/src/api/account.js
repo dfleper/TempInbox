@@ -1,13 +1,10 @@
-import { token } from "../config.js";
+import { apiBaseUrl } from "../config.js";
 
 export const getAccount = async () => {
-  const response = await fetch("https://api2.freecustom.email/v1/me", {
+  const response = await fetch(`${apiBaseUrl}/me`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
-  
+
   if (!response.ok) {
     throw new Error(`HTTP Error: ${response.status}`);
   }

@@ -1,12 +1,9 @@
-import { token } from "../config.js";
+import { apiBaseUrl } from "../config.js";
 import { disableButton } from "../ui/disabledButton.js";
 
 export const getEmail = async () => {
-  const response = await fetch("https://api2.freecustom.email/v1/inboxes", {
+  const response = await fetch(`${apiBaseUrl}/inboxes`, {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   const monthLimit = response.headers.get("x-ratelimit-remaining-month");
