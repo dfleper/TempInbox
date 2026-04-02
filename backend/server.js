@@ -36,6 +36,11 @@ loadEnvFile(resolve(process.cwd(), "backend/.env"));
 const PORT = Number(process.env.PORT) || 3000;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
 const API_KEY = process.env.API_KEY;
+const EMAIL = process.env.EMAIL;
+
+if (!EMAIL) {
+  throw new Error("EMAIL no está definido en el .env");
+}
 
 if (!API_KEY) {
   console.error(
@@ -92,6 +97,7 @@ const proxyRequest = async (endpoint, res, options = {}) => {
     });
   }
 };
+
 const server = createServer(async (req, res) => {
   setCorsHeaders(res);
 
@@ -115,6 +121,11 @@ const server = createServer(async (req, res) => {
     await proxyRequest("/v1/inboxes", res, {
       copyHeaders: ["x-ratelimit-remaining-month"],
     });
+    return;
+  }
+
+  if (req.url === "/api/inboxes/messages") {
+    await proxyRequest(`/v1/inboxes/${EMAIL}/messages`, res);
     return;
   }
 

@@ -26,9 +26,26 @@
     <section>
       <button class="btn btn-soft btn-primary btn-sm" id="planBtn">Plan</button>&nbsp;
       <button class="btn btn-soft btn-primary btn-sm" id="emailBtn">Email</button>&nbsp;
-      <input type="email" placeholder="Email Temporal" class="input input-primary input-sm w-40" id="inputMail" readonly/>
+      <input type="email" placeholder="Email Temporal" class="input input-primary input-sm w-40" id="inputMail"
+        readonly />&nbsp;
+      <button class="btn btn-soft btn-primary btn-sm" id="emailListBtn">Bandeja de Entrada</button>&nbsp;
       <p id="monthLimit" class="mt-2"></p>
+    </section>
 
+    <section>
+      <div class="overflow-x-auto mt-10 w-max">
+        <table class="table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>De:</th>
+              <th>Asunto:</th>
+              <th>Fecha:</th>
+            </tr>
+          </thead>
+          <tbody id="emailsTableBody"></tbody>
+        </table>
+      </div>
     </section>
 
   </main>
