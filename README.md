@@ -20,3 +20,32 @@
  TempInbox is a simple temporary email inbox built with HTML5, CSS3 and JavaScript, powered by the FreeCustom Email API for quick disposable email reception.
  
  ---
+
+ ### Setting up locally
+
+To run the project locally, follow these steps:
+
+**1.** Install the project dependencies:
+
+```bash
+npm install
+```
+**2.** Start the backend server:
+
+```bash
+npm run dev:backend
+```
+**3.** Start the frontend application:
+
+```bash
+npm run dev:frontend
+```
+---
+
+### Technology stack
+
+- **Frontend:** HTML5, CSS3, vanilla JavaScript, Tailwind CSS
+- **Bundler / development environment:** Vite
+- **Backend:** Node.js
+
+---

@@ -20,3 +20,32 @@
  TempInbox es un sencillo buzón de correo electrónico temporal creado con HTML5, CSS3 y JavaScript, que utiliza la API de FreeCustom Email para recibir rápidamente correos electrónicos desechables.
  
  ---
+
+ ### Puesta en marcha en local
+
+Para ejecutar el proyecto en local, sigue estos pasos:
+
+**1.** Instala las dependencias del proyecto:
+
+```bash
+npm install
+```
+**2.** Levanta el servidor backend:
+
+```bash
+npm run dev:backend
+```
+**3.** Inicia la aplicación frontend:
+
+```bash
+npm run dev:frontend
+```
+---
+
+### Stack tecnológico
+
+- **Frontend:** HTML5, CSS3, JavaScript Vanilla, Tailwind CSS
+- **Bundler / entorno de desarrollo:** Vite
+- **Backend:** Node.js
+
+---
