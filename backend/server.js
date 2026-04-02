@@ -1,11 +1,46 @@
 import { createServer } from "node:http";
+import { existsSync, readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
+const loadEnvFile = (filePath) => {
+  if (!existsSync(filePath)) {
+    return;
+  }
+
+  const fileContent = readFileSync(filePath, "utf8");
+  for (const rawLine of fileContent.split("\n")) {
+    const line = rawLine.trim();
+    if (!line || line.startsWith("#")) {
+      continue;
+    }
+
+    const equalIndex = line.indexOf("=");
+    if (equalIndex === -1) {
+      continue;
+    }
+
+    const key = line.slice(0, equalIndex).trim();
+    if (!key || process.env[key] !== undefined) {
+      continue;
+    }
+
+    const rawValue = line.slice(equalIndex + 1).trim();
+    const unquotedValue = rawValue.replace(/^(['"])(.*)\1$/, "$2");
+    process.env[key] = unquotedValue;
+  }
+};
+
+loadEnvFile(resolve(process.cwd(), ".env"));
+loadEnvFile(resolve(process.cwd(), "backend/.env"));
 
 const PORT = Number(process.env.PORT) || 3000;
 const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
 const API_KEY = process.env.API_KEY;
 
 if (!API_KEY) {
-  console.error("Missing API_KEY environment variable.");
+  console.error(
+    "Missing API_KEY environment variable. Create a .env file in the project root (or backend/.env) based on .env.example."
+  );
   process.exit(1);
 }
 
@@ -30,7 +65,7 @@ const proxyRequest = async (endpoint, res, options = {}) => {
       },
     });
 
-    if (options.copyHeaders) {
+    if (Array.isArray(options.copyHeaders)) {
       for (const headerName of options.copyHeaders) {
         const value = upstreamResponse.headers.get(headerName);
         if (value) {
@@ -56,13 +91,7 @@ const proxyRequest = async (endpoint, res, options = {}) => {
     });
   }
 };
-
 const server = createServer(async (req, res) => {
-  setCorsHeaders(res);
-
-  if (req.method === "OPTIONS") {
-    res.statusCode = 204;
-    res.end();
     return;
   }
 
