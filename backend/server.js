@@ -48,6 +48,7 @@ const setCorsHeaders = (res) => {
   res.setHeader("Access-Control-Allow-Origin", FRONTEND_ORIGIN);
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Expose-Headers", "x-ratelimit-remaining-month");
 };
 
 const writeJson = (res, statusCode, payload) => {
@@ -92,6 +93,11 @@ const proxyRequest = async (endpoint, res, options = {}) => {
   }
 };
 const server = createServer(async (req, res) => {
+  setCorsHeaders(res);
+
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    res.end();
     return;
   }
 
