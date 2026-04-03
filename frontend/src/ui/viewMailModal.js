@@ -1,4 +1,4 @@
-export const viewMailModal = (email) => {
+export const viewMailModal = (email, onDelete) => {
   const modal = document.createElement("dialog");
   modal.id = "mailModal";
   modal.className = "modal";
@@ -18,6 +18,7 @@ export const viewMailModal = (email) => {
       </div>
 
       <div class="modal-action">
+        <button id="deleteBtn" class="btn btn-error">Delete</button>
         <form method="dialog">
           <button class="btn">Cerrar</button>
         </form>
@@ -27,6 +28,11 @@ export const viewMailModal = (email) => {
 
   document.body.appendChild(modal);
   modal.showModal();
+
+  modal.querySelector("#deleteBtn").addEventListener("click", () => {
+    onDelete(email);
+    modal.close();
+  });
 
   modal.addEventListener("close", () => {
     modal.remove();

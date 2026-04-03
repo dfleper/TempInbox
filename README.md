@@ -44,7 +44,7 @@ npm run dev:frontend
 
 ### Technology stack
 
-- **Frontend:** HTML5, CSS3, vanilla JavaScript, Tailwind CSS
+- **Frontend:** HTML5, CSS3, Vanilla JavaScript, Tailwind CSS
 - **Bundler / development environment:** Vite
 - **Backend:** Node.js
 

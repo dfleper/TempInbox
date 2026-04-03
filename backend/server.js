@@ -8,8 +8,10 @@ const loadEnvFile = (filePath) => {
   }
 
   const fileContent = readFileSync(filePath, "utf8");
+
   for (const rawLine of fileContent.split("\n")) {
     const line = rawLine.trim();
+
     if (!line || line.startsWith("#")) {
       continue;
     }
@@ -51,8 +53,8 @@ if (!API_KEY) {
 
 const setCorsHeaders = (res) => {
   res.setHeader("Access-Control-Allow-Origin", FRONTEND_ORIGIN);
-  res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Methods", "GET, DELETE, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Expose-Headers", "x-ratelimit-remaining-month");
 };
 
@@ -63,33 +65,47 @@ const writeJson = (res, statusCode, payload) => {
 };
 
 const proxyRequest = async (endpoint, res, options = {}) => {
+  const { method = "GET", copyHeaders = [] } = options;
+
   try {
     const upstreamResponse = await fetch(`https://api2.freecustom.email${endpoint}`, {
-      method: "GET",
+      method,
       headers: {
         Authorization: `Bearer ${API_KEY}`,
       },
     });
 
-    if (Array.isArray(options.copyHeaders)) {
-      for (const headerName of options.copyHeaders) {
-        const value = upstreamResponse.headers.get(headerName);
-        if (value) {
-          res.setHeader(headerName, value);
-        }
+    for (const headerName of copyHeaders) {
+      const value = upstreamResponse.headers.get(headerName);
+      if (value) {
+        res.setHeader(headerName, value);
       }
     }
 
-    const result = await upstreamResponse.json();
+    if (upstreamResponse.status === 204) {
+      res.statusCode = 204;
+      res.end();
+      return;
+    }
+
+    const contentType = upstreamResponse.headers.get("content-type") || "";
+    let result = null;
+
+    if (contentType.includes("application/json")) {
+      result = await upstreamResponse.json();
+    } else {
+      const text = await upstreamResponse.text();
+      result = text ? { message: text } : null;
+    }
 
     if (!upstreamResponse.ok) {
       writeJson(res, upstreamResponse.status, {
-        error: result?.error || "Upstream API error",
+        error: result?.error || result?.message || "Upstream API error",
       });
       return;
     }
 
-    writeJson(res, 200, result);
+    writeJson(res, upstreamResponse.status, result ?? { success: true });
   } catch (error) {
     writeJson(res, 502, {
       error: "Cannot reach upstream API",
@@ -107,24 +123,19 @@ const server = createServer(async (req, res) => {
     return;
   }
 
-  if (req.method !== "GET") {
-    writeJson(res, 405, { error: "Method not allowed" });
-    return;
-  }
-
-  if (req.url === "/api/me") {
+  if (req.url === "/api/me" && req.method === "GET") {
     await proxyRequest("/v1/me", res);
     return;
   }
 
-  if (req.url === "/api/inboxes") {
+  if (req.url === "/api/inboxes" && req.method === "GET") {
     await proxyRequest("/v1/inboxes", res, {
       copyHeaders: ["x-ratelimit-remaining-month"],
     });
     return;
   }
 
-  if (req.url === "/api/inboxes/messages") {
+  if (req.url === "/api/inboxes/messages" && req.method === "GET") {
     await proxyRequest(`/v1/inboxes/${EMAIL}/messages`, res);
     return;
   }
@@ -132,7 +143,26 @@ const server = createServer(async (req, res) => {
   if (req.url.startsWith("/api/inboxes/messages/")) {
     const id = req.url.split("/").pop();
 
-    await proxyRequest(`/v1/inboxes/${EMAIL}/messages/${id}`, res);
+    if (!id) {
+      writeJson(res, 400, { error: "Missing message id" });
+      return;
+    }
+
+    if (req.method === "GET") {
+      await proxyRequest(`/v1/inboxes/${EMAIL}/messages/${id}`, res, {
+        method: "GET",
+      });
+      return;
+    }
+
+    if (req.method === "DELETE") {
+      await proxyRequest(`/v1/inboxes/${EMAIL}/messages/${id}`, res, {
+        method: "DELETE",
+      });
+      return;
+    }
+
+    writeJson(res, 405, { error: "Method not allowed" });
     return;
   }
 

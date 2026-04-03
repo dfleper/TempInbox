@@ -1,5 +1,7 @@
-import { getMail } from "../api/loadMail";
-import { viewMailModal } from "./viewMailModal";
+import { getMail } from "../api/loadMail.js";
+import { deleteMail } from "../api/deleteMail.js";
+import { viewMailModal } from "./viewMailModal.js";
+import { showToast } from "./toast.js";
 
 const tbody = document.getElementById("emailsTableBody");
 
@@ -15,19 +17,25 @@ export function renderEmails(emails) {
     row.dataset.id = email.id;
 
     row.innerHTML = `
-        <th>${index + 1}</th>
-        <td>${email.from}</td>
-        <td>${email.subject}</td>
-        <td>${formatDate(email.date)}</td>
-      `;
+      <th>${index + 1}</th>
+      <td>${email.from}</td>
+      <td>${email.subject}</td>
+      <td>${formatDate(email.date)}</td>
+    `;
 
     tbody.appendChild(row);
   });
 }
 
+let rowsListenerAdded = false;
+
 export function choiceRows() {
   const table = document.getElementById("emailsTableBody");
-  if (!table) return;
+  const emailListBtn = document.getElementById("emailListBtn");
+
+  if (!table || rowsListenerAdded) return;
+
+  rowsListenerAdded = true;
 
   table.addEventListener("click", async (event) => {
     const row = event.target.closest("tr");
@@ -37,10 +45,15 @@ export function choiceRows() {
 
     try {
       const mail = await getMail(id);
-      viewMailModal(mail);
-      // console.log(mail);
+
+      viewMailModal(mail, async () => {
+        await deleteMail(id);
+        row.remove();
+        showToast("Email eliminado correctamente.", emailListBtn);
+      });
     } catch (error) {
       console.error(error);
+      showToast("No se pudo abrir o eliminar el email.", emailListBtn);
     }
   });
 }
