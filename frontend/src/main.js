@@ -4,7 +4,7 @@ import { getEmailList } from "./api/loadEmails.js";
 import { viewAccount } from "./ui/accountModal.js";
 import { showToast } from "./ui/toast.js";
 import { viewEmail } from "./ui/viewEmail.js";
-import { renderEmails } from "./ui/renderEmails.js";
+import { choiceRows, renderEmails } from "./ui/renderEmails.js";
 import { disableButton } from "./ui/disabledButton.js";
 
 const planBtn = document.querySelector("#planBtn");
@@ -64,6 +64,7 @@ const seeEmailList = async () => {
     }
 
     renderEmails(emails);
+    choiceRows();
   } catch (error) {
     console.error("Error getting email list:", error);
     showToast("No se pudo cargar la bandeja de entrada.", emailListBtn);

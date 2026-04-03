@@ -129,6 +129,13 @@ const server = createServer(async (req, res) => {
     return;
   }
 
+  if (req.url.startsWith("/api/inboxes/messages/")) {
+    const id = req.url.split("/").pop();
+
+    await proxyRequest(`/v1/inboxes/${EMAIL}/messages/${id}`, res);
+    return;
+  }
+
   writeJson(res, 404, { error: "Not found" });
 });
 
