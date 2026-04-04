@@ -73,7 +73,7 @@ npm run dev:frontend
 
 ---
 
-### Vista escritorio
+### Vista Escritorio
 
 <div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 12px;">
   <img src="./screenshots/mac_001.png" width="45%">

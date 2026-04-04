@@ -51,5 +51,40 @@ npm run dev:frontend
 
 ---
 
+## Screenshots
+
+### Mobile View
+
+<div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 12px;">
+  <img src="./screenshots/movil_001.png" width="30%">
+  <img src="./screenshots/movil_002.png" width="30%">
+  <img src="./screenshots/movil_003.png" width="30%">
+</div>
+
+---
+
+### Tablet View
+
+<div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 12px;">
+  <img src="./screenshots/tab_001.png" width="30%">
+  <img src="./screenshots/tab_002.png" width="30%">
+  <img src="./screenshots/tab_003.png" width="30%">
+</div>
+
+---
+
+### Desktop View
+
+<div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 12px;">
+  <img src="./screenshots/mac_001.png" width="45%">
+  <img src="./screenshots/mac_002.png" width="45%">
+</div>
+
+<div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 24px;">
+  <img src="./screenshots/mac_003.png" width="45%">
+</div>
+
+---
+
 ## Legal
 - See 📄 **[NOTICE.md](NOTICE.md).** All rights reserved.
