@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="light">
 
 <head>
   <meta charset="UTF-8">
@@ -13,28 +13,57 @@
   <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
 </head>
 
-<body>
-  <header>
-    <img src="./src/assets/logo.png" alt="TempInbox Logo" width="300">
-    <br>
-    <p>Recibe emails temporales de forma rápida y sencilla.</p>
-    <br>
+<body class="min-h-screen flex flex-col">
+
+  <header class="hero">
+    <div class="hero-content text-center mb-4">
+      <div>
+        <img src="./src/assets/logo.png" alt="TempInbox Logo" width="300" class="mx-auto mb-4">
+        <p>Recibe emails temporales de forma rápida y sencilla.</p>
+      </div>
+    </div>
   </header>
 
-  <main>
+  <main class="flex-1">
 
-    <section>
-      <button class="btn btn-soft btn-primary btn-sm" id="planBtn">Plan</button>&nbsp;
-      <button class="btn btn-soft btn-primary btn-sm" id="emailBtn">Email</button>&nbsp;
-      <input type="email" placeholder="Email Temporal" class="input input-primary input-sm w-40" id="inputMail"
-        readonly />&nbsp;
-      <button class="btn btn-soft btn-primary btn-sm" id="emailListBtn">Bandeja de Entrada</button>&nbsp;
+    <section class="flex flex-col items-center text-center gap-2">
+      <div class="flex flex-wrap justify-center items-center gap-2">
+        <button class="btn btn-soft btn-primary btn-sm" id="planBtn">Plan</button>
+        <button class="btn btn-soft btn-primary btn-sm" id="emailBtn">Email</button>
+        <input type="email" placeholder="Email Temporal" class="input input-primary input-sm w-40" id="inputMail"
+          readonly />
+        <button class="btn btn-soft btn-primary btn-sm" id="emailListBtn">Bandeja de Entrada</button>
+        <label class="toggle text-base-content">
+          <input type="checkbox" value="dark" class="theme-controller" />
+
+          <svg aria-label="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </g>
+          </svg>
+
+          <svg aria-label="moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g stroke-linejoin="round" stroke-linecap="round" stroke-width="2" fill="none" stroke="currentColor">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </g>
+          </svg>
+
+        </label>
+      </div>
       <p id="monthLimit" class="mt-2"></p>
     </section>
 
-    <section>
-      <div class="overflow-x-auto mt-10 w-max">
-        <table class="table">
+    <section class="flex justify-center">
+      <div class="overflow-x-auto mt-10">
+        <table class="table text-center">
           <thead>
             <tr>
               <th></th>
@@ -50,8 +79,17 @@
 
   </main>
 
+  <footer class="footer footer-center text-base-content px-4 py-6">
+    <aside>
+      <p class="text-center text-sm sm:text-base break-words">
+        Copyright © 2026 - dfleper with ❤️
+      </p>
+    </aside>
+  </footer>
+
   <script type="module" src="./src/main.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
 </body>
 
 </html>
