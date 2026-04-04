@@ -57,8 +57,8 @@ npm run dev:frontend
 
 <div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 12px;">
   <img src="./screenshots/movil_001.png" width="30%">
-  <img src="./screenshots/mac_002.png" width="30%">
-  <img src="./screenshots/mac_003.png" width="30%">
+  <img src="./screenshots/movil_002.png" width="30%">
+  <img src="./screenshots/movil_003.png" width="30%">
 </div>
 
 ---
@@ -77,11 +77,11 @@ npm run dev:frontend
 
 <div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 12px;">
   <img src="./screenshots/mac_001.png" width="45%">
-  <img src="./screenshots/mac_002" width="45%">
+  <img src="./screenshots/mac_002.png" width="45%">
 </div>
 
 <div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 24px;">
-  <img src="./screenshots/src_mac_003.png" width="45%">
+  <img src="./screenshots/mac_003.png" width="45%">
 </div>
 
 ---
