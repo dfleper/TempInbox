@@ -49,3 +49,6 @@ npm run dev:frontend
 - **Backend:** Node.js
 
 ---
+
+## Legal
+- Véase 📄 **[AVISO.md](AVISO.es.md).** Todos los derechos reservados.

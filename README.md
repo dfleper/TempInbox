@@ -49,3 +49,6 @@ npm run dev:frontend
 - **Backend:** Node.js
 
 ---
+
+## Legal
+- See 📄 **[NOTICE.md](NOTICE.md).** All rights reserved.
