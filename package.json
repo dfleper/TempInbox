@@ -11,9 +11,9 @@
     "preview": "vite preview --config frontend/vite.config.js"
   },
   "devDependencies": {
-    "vite": "^8.0.1"
+    "vite": "8.0.1"
   },
   "dependencies": {
-    "freecustom-email": "^1.0.0"
+    "freecustom-email": "1.0.0"
   }
 }

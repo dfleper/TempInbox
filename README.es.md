@@ -45,10 +45,46 @@ npm run dev:frontend
 ### Stack tecnológico
 
 - **Frontend:** HTML5, CSS3, JavaScript Vanilla, Tailwind CSS
-- **Bundler / entorno de desarrollo:** Vite
-- **Backend:** Node.js
+- **Bundler / entorno de desarrollo:** Vite (Versión **8.0.1**)
+- **Backend:** Node.js (Versión **v24.14.1**)
+- **API freecustom-email:** (Versión **1.0.0**)
+
+---
+
+## Screenshots
+
+### Vista Móvil
+
+<div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 12px;">
+  <img src="./screenshots/movil_001.png" width="30%">
+  <img src="./screenshots/mac_002.png" width="30%">
+  <img src="./screenshots/mac_003.png" width="30%">
+</div>
+
+---
+
+### Vista Tablet
+
+<div style="display: flex; gap: 12px; justify-content: center; margin-bottom: 12px;">
+  <img src="./screenshots/tab_001.png" width="30%">
+  <img src="./screenshots/tab_002.png" width="30%">
+  <img src="./screenshots/tab_003.png" width="30%">
+</div>
+
+---
+
+### Vista escritorio
+
+<div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 12px;">
+  <img src="./screenshots/mac_001.png" width="45%">
+  <img src="./screenshots/mac_002" width="45%">
+</div>
+
+<div style="display: flex; gap: 16px; justify-content: center; margin-bottom: 24px;">
+  <img src="./screenshots/src_mac_003.png" width="45%">
+</div>
 
 ---
 
 ## Legal
-- Véase 📄 **[AVISO.md](AVISO.es.md).** Todos los derechos reservados.
+- Véase 📄 **[AVISO.es.md](AVISO.es.md).** Todos los derechos reservados.
