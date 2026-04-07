@@ -45,7 +45,7 @@ npm run dev:frontend
 ### Stack tecnológico
 
 - **Frontend:** HTML5, CSS3, JavaScript Vanilla, Tailwind CSS
-- **Bundler / entorno de desarrollo:** Vite (Versión **8.0.1**)
+- **Bundler / entorno de desarrollo:** Vite (Versión **8.0.5**)
 - **Backend:** Node.js (Versión **v24.14.1**)
 - **API freecustom-email:** (Versión **1.0.0**)
 
