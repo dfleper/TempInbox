@@ -1,1 +1,2 @@
-export const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000/api";
+const envApiBaseUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+export const apiBaseUrl = envApiBaseUrl ? envApiBaseUrl.replace(/\/$/, "") : "/api";
