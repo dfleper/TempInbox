@@ -7,4 +7,7 @@ export default defineConfig({
     outDir: resolve(__dirname, "../dist"),
     emptyOutDir: true,
   },
+  preview: {
+    allowedHosts: ["tempinbox-frontend-production.up.railway.app"],
+  },
 });
