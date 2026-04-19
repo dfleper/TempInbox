@@ -44,7 +44,7 @@ const normalizeEnvValue = (value) => {
 };
 
 const PORT = Number(normalizeEnvValue(process.env.PORT)) || 3000;
-const FRONTEND_ORIGIN = normalizeEnvValue(process.env.FRONTEND_ORIGIN) || "http://localhost:5173";
+const FRONTEND_ORIGIN = (normalizeEnvValue(process.env.FRONTEND_ORIGIN) || "http://localhost:5173").replace(/\/+$/, "");
 const API_KEY = normalizeEnvValue(process.env.API_KEY);
 const EMAIL = normalizeEnvValue(process.env.EMAIL);
 
