@@ -35,10 +35,19 @@ const loadEnvFile = (filePath) => {
 loadEnvFile(resolve(process.cwd(), ".env"));
 loadEnvFile(resolve(process.cwd(), "backend/.env"));
 
-const PORT = Number(process.env.PORT) || 3000;
-const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN || "http://localhost:5173";
-const API_KEY = process.env.API_KEY;
-const EMAIL = process.env.EMAIL;
+const normalizeEnvValue = (value) => {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  return value.trim().replace(/^(['"])(.*)\1$/, "$2");
+};
+
+const PORT = Number(normalizeEnvValue(process.env.PORT)) || 3000;
+const FRONTEND_ORIGIN = normalizeEnvValue(process.env.FRONTEND_ORIGIN) || "http://localhost:5173";
+const API_KEY = normalizeEnvValue(process.env.API_KEY);
+const EMAIL = normalizeEnvValue(process.env.EMAIL);
+
 
 if (!EMAIL) {
   throw new Error("EMAIL no está definido en el .env");
