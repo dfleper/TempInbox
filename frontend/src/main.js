@@ -15,7 +15,6 @@ disableButton(emailListBtn);
 const seePlan = async () => {
   try {
     const data = await getAccount();
-    // console.log(data);
     viewAccount(data);
   } catch (error) {
     console.error("Error fetching account data:", error);
@@ -30,15 +29,14 @@ planBtn.addEventListener("click", seePlan);
 
 const seeEmail = async () => {
   try {
-    const data = await getEmail();
-    // console.log(data);
+    const inboxes = await getEmail();
 
-    if (!data || data.length === 0) {
+    if (!Array.isArray(inboxes) || inboxes.length === 0) {
       showToast("No hay un correo disponible.", emailBtn);
       return;
     }
 
-    const inbox = data[0]?.inbox;
+    const inbox = inboxes[0];
 
     if (!inbox) {
       showToast("No se encontró un correo válido.", emailBtn);
@@ -58,7 +56,8 @@ const seeEmailList = async () => {
   try {
     const emails = await getEmailList();
 
-    if (!emails || emails.length === 0) {
+    if (!Array.isArray(emails) || emails.length === 0) {
+      renderEmails([]);
       showToast("No hay correos en la bandeja.", emailListBtn);
       return;
     }

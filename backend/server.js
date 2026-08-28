@@ -51,6 +51,8 @@ if (!API_KEY) {
   process.exit(1);
 }
 
+const ENCODED_EMAIL = encodeURIComponent(EMAIL);
+
 const setCorsHeaders = (res) => {
   res.setHeader("Access-Control-Allow-Origin", FRONTEND_ORIGIN);
   res.setHeader("Access-Control-Allow-Methods", "GET, DELETE, OPTIONS");
@@ -65,12 +67,13 @@ const writeJson = (res, statusCode, payload) => {
 };
 
 const proxyRequest = async (endpoint, res, options = {}) => {
-  const { method = "GET", copyHeaders = [] } = options;
+  const { method = "GET", copyHeaders = [], transform } = options;
 
   try {
     const upstreamResponse = await fetch(`https://api2.freecustom.email${endpoint}`, {
       method,
       headers: {
+        Accept: "application/json",
         Authorization: `Bearer ${API_KEY}`,
       },
     });
@@ -99,16 +102,25 @@ const proxyRequest = async (endpoint, res, options = {}) => {
     }
 
     if (!upstreamResponse.ok) {
-      writeJson(res, upstreamResponse.status, {
-        error: result?.error || result?.message || "Upstream API error",
-      });
+      if (result && typeof result === "object" && !Array.isArray(result)) {
+        writeJson(res, upstreamResponse.status, result);
+      } else {
+        writeJson(res, upstreamResponse.status, {
+          success: false,
+          error: "upstream_error",
+          message: "FreeCustom.Email devolvió un error sin cuerpo JSON.",
+        });
+      }
       return;
     }
 
-    writeJson(res, upstreamResponse.status, result ?? { success: true });
+    const payload = typeof transform === "function" ? transform(result) : result;
+    writeJson(res, upstreamResponse.status, payload ?? { success: true });
   } catch (error) {
     writeJson(res, 502, {
-      error: "Cannot reach upstream API",
+      success: false,
+      error: "upstream_unreachable",
+      message: "Cannot reach FreeCustom.Email API",
       detail: error instanceof Error ? error.message : "Unknown error",
     });
   }
@@ -131,12 +143,27 @@ const server = createServer(async (req, res) => {
   if (req.url === "/api/inboxes" && req.method === "GET") {
     await proxyRequest("/v1/inboxes", res, {
       copyHeaders: ["x-ratelimit-remaining-month"],
+      transform: (result) => {
+        const inboxes = Array.isArray(result?.data?.inboxes)
+          ? result.data.inboxes
+          : [];
+        const configuredInboxes = inboxes.includes(EMAIL) ? [EMAIL] : [];
+
+        return {
+          ...result,
+          data: {
+            ...(result?.data ?? {}),
+            inboxes: configuredInboxes,
+            count: configuredInboxes.length,
+          },
+        };
+      },
     });
     return;
   }
 
   if (req.url === "/api/inboxes/messages" && req.method === "GET") {
-    await proxyRequest(`/v1/inboxes/${EMAIL}/messages`, res);
+    await proxyRequest(`/v1/inboxes/${ENCODED_EMAIL}/messages`, res);
     return;
   }
 
@@ -144,29 +171,33 @@ const server = createServer(async (req, res) => {
     const id = req.url.split("/").pop();
 
     if (!id) {
-      writeJson(res, 400, { error: "Missing message id" });
+      writeJson(res, 400, { success: false, error: "missing_message_id" });
       return;
     }
 
     if (req.method === "GET") {
-      await proxyRequest(`/v1/inboxes/${EMAIL}/messages/${id}`, res, {
-        method: "GET",
-      });
+      await proxyRequest(
+        `/v1/inboxes/${ENCODED_EMAIL}/messages/${encodeURIComponent(id)}`,
+        res,
+        { method: "GET" }
+      );
       return;
     }
 
     if (req.method === "DELETE") {
-      await proxyRequest(`/v1/inboxes/${EMAIL}/messages/${id}`, res, {
-        method: "DELETE",
-      });
+      await proxyRequest(
+        `/v1/inboxes/${ENCODED_EMAIL}/messages/${encodeURIComponent(id)}`,
+        res,
+        { method: "DELETE" }
+      );
       return;
     }
 
-    writeJson(res, 405, { error: "Method not allowed" });
+    writeJson(res, 405, { success: false, error: "method_not_allowed" });
     return;
   }
 
-  writeJson(res, 404, { error: "Not found" });
+  writeJson(res, 404, { success: false, error: "not_found" });
 });
 
 server.listen(PORT, () => {
