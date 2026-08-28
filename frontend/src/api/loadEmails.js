@@ -10,5 +10,5 @@ export const getEmailList = async () => {
   }
 
   const result = await response.json();
-  return result.data;
+  return result.data?.messages ?? [];
 };

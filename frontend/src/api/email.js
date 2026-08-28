@@ -9,7 +9,13 @@ export const getEmail = async () => {
 
   const monthLimit = response.headers.get("x-ratelimit-remaining-month");
   const monthElement = document.getElementById("monthLimit");
-  monthElement.textContent = `Requests restantes este mes: ${monthLimit}`;
+  monthElement.textContent = monthLimit
+    ? `Requests restantes este mes: ${monthLimit}`
+    : "";
+
+  if (!response.ok) {
+    throw new Error(`HTTP Error: ${response.status}`);
+  }
 
   const emailBtn = document.querySelector("#emailBtn");
   const emailListBtn = document.querySelector("#emailListBtn");
@@ -17,10 +23,6 @@ export const getEmail = async () => {
   disableButton(emailBtn);
   enabledButton(emailListBtn);
 
-  if (!response.ok) {
-    throw new Error(`HTTP Error: ${response.status}`);
-  }
-
   const result = await response.json();
-  return result.data;
+  return result.data?.inboxes ?? [];
 };
