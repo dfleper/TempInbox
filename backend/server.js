@@ -239,16 +239,26 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.url.startsWith("/api/inboxes/messages/")) {
-    const id = req.url.split("/").pop();
+    const rawId = req.url.split("/").pop();
 
-    if (!id) {
+    if (!rawId) {
       writeJson(res, 400, { success: false, error: "missing_message_id" });
       return;
     }
 
+    let id;
+    try {
+      id = decodeURIComponent(rawId);
+    } catch {
+      writeJson(res, 400, { success: false, error: "invalid_message_id" });
+      return;
+    }
+
+    const encodedId = encodeURIComponent(id);
+
     if (req.method === "GET") {
       await proxyRequest(
-        `/v1/inboxes/${ENCODED_EMAIL}/messages/${encodeURIComponent(id)}`,
+        `/v1/inboxes/${ENCODED_EMAIL}/messages/${encodedId}`,
         res,
         { method: "GET" }
       );
@@ -257,7 +267,7 @@ const server = createServer(async (req, res) => {
 
     if (req.method === "DELETE") {
       await proxyRequest(
-        `/v1/inboxes/${ENCODED_EMAIL}/messages/${encodeURIComponent(id)}`,
+        `/v1/inboxes/${ENCODED_EMAIL}/messages/${encodedId}`,
         res,
         { method: "DELETE" }
       );
