@@ -34,12 +34,31 @@ const normalizeEnvValue = (value) => {
   return value.trim().replace(/^(['"])(.*)\1$/, "$2");
 };
 
+const normalizeBaseUrl = (value) => {
+  const normalized = normalizeEnvValue(value);
+  if (!normalized) return null;
+
+  try {
+    const url = new URL(normalized);
+    if (url.protocol !== "https:") {
+      throw new Error("UPSTREAM_BASE_URL must use HTTPS");
+    }
+    return url.toString().replace(/\/+$/, "");
+  } catch (error) {
+    throw new Error(
+      `Invalid UPSTREAM_BASE_URL: ${error instanceof Error ? error.message : "unknown error"}`
+    );
+  }
+};
+
 const PORT = Number(normalizeEnvValue(process.env.PORT)) || 3000;
 const FRONTEND_ORIGIN = (
   normalizeEnvValue(process.env.FRONTEND_ORIGIN) || "http://localhost:5173"
 ).replace(/\/+$/, "");
 const API_KEY = normalizeEnvValue(process.env.API_KEY);
 const EMAIL = normalizeEnvValue(process.env.EMAIL);
+const UPSTREAM_BASE_URL =
+  normalizeBaseUrl(process.env.UPSTREAM_BASE_URL) || "https://api2.freecustom.email";
 
 if (!EMAIL) throw new Error("EMAIL no está definido en el .env");
 
@@ -49,7 +68,6 @@ if (!API_KEY) {
 }
 
 const ENCODED_EMAIL = encodeURIComponent(EMAIL);
-const UPSTREAM_BASE_URL = "https://api2.freecustom.email";
 
 const setCorsHeaders = (res) => {
   res.setHeader("Access-Control-Allow-Origin", FRONTEND_ORIGIN);
@@ -69,12 +87,18 @@ const safeNetworkCause = (error) => {
 
   return {
     detail: error instanceof Error ? error.message : "Unknown error",
-    cause_code: cause && typeof cause === "object" && "code" in cause ? String(cause.code) : null,
-    cause_message: cause && typeof cause === "object" && "message" in cause ? String(cause.message) : null,
-    cause_errno: cause && typeof cause === "object" && "errno" in cause ? String(cause.errno) : null,
-    cause_syscall: cause && typeof cause === "object" && "syscall" in cause ? String(cause.syscall) : null,
-    cause_address: cause && typeof cause === "object" && "address" in cause ? String(cause.address) : null,
-    cause_port: cause && typeof cause === "object" && "port" in cause ? String(cause.port) : null,
+    cause_code:
+      cause && typeof cause === "object" && "code" in cause ? String(cause.code) : null,
+    cause_message:
+      cause && typeof cause === "object" && "message" in cause ? String(cause.message) : null,
+    cause_errno:
+      cause && typeof cause === "object" && "errno" in cause ? String(cause.errno) : null,
+    cause_syscall:
+      cause && typeof cause === "object" && "syscall" in cause ? String(cause.syscall) : null,
+    cause_address:
+      cause && typeof cause === "object" && "address" in cause ? String(cause.address) : null,
+    cause_port:
+      cause && typeof cause === "object" && "port" in cause ? String(cause.port) : null,
   };
 };
 
@@ -128,11 +152,17 @@ const proxyRequest = async (endpoint, res, options = {}) => {
     const payload = typeof transform === "function" ? transform(result) : result;
     writeJson(res, upstreamResponse.status, payload ?? { success: true });
   } catch (error) {
-    writeJson(res, 502, {
+    const networkError = safeNetworkCause(error);
+    const tlsExpired = networkError.cause_code === "CERT_HAS_EXPIRED";
+
+    writeJson(res, tlsExpired ? 503 : 502, {
       success: false,
-      error: "upstream_unreachable",
-      message: "Cannot reach FreeCustom.Email API",
-      ...safeNetworkCause(error),
+      error: tlsExpired ? "upstream_tls_certificate_expired" : "upstream_unreachable",
+      message: tlsExpired
+        ? "FreeCustom.Email is presenting an expired TLS certificate. The provider must renew it or publish another HTTPS API endpoint."
+        : "Cannot reach FreeCustom.Email API",
+      upstream: UPSTREAM_BASE_URL,
+      ...networkError,
     });
   }
 };
@@ -185,12 +215,20 @@ const server = createServer(async (req, res) => {
     }
 
     if (req.method === "GET") {
-      await proxyRequest(`/v1/inboxes/${ENCODED_EMAIL}/messages/${encodeURIComponent(id)}`, res, { method: "GET" });
+      await proxyRequest(
+        `/v1/inboxes/${ENCODED_EMAIL}/messages/${encodeURIComponent(id)}`,
+        res,
+        { method: "GET" }
+      );
       return;
     }
 
     if (req.method === "DELETE") {
-      await proxyRequest(`/v1/inboxes/${ENCODED_EMAIL}/messages/${encodeURIComponent(id)}`, res, { method: "DELETE" });
+      await proxyRequest(
+        `/v1/inboxes/${ENCODED_EMAIL}/messages/${encodeURIComponent(id)}`,
+        res,
+        { method: "DELETE" }
+      );
       return;
     }
 
