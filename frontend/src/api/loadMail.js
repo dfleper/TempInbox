@@ -1,7 +1,8 @@
 import { apiBaseUrl } from "../config.js";
 
 export const getMail = async (id) => {
-  const response = await fetch(`${apiBaseUrl}/inboxes/messages/${id}`, {
+  const encodedId = encodeURIComponent(String(id));
+  const response = await fetch(`${apiBaseUrl}/inboxes/messages/${encodedId}`, {
     method: "GET",
   });
 
