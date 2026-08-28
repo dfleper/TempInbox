@@ -6,23 +6,30 @@ import { showToast } from "./toast.js";
 const tbody = document.getElementById("emailsTableBody");
 
 function formatDate(isoDate) {
-  return new Date(isoDate).toLocaleString("es-ES");
+  const date = new Date(isoDate);
+  return Number.isNaN(date.getTime()) ? "-" : date.toLocaleString("es-ES");
 }
 
 export function renderEmails(emails) {
-  tbody.innerHTML = "";
+  tbody.replaceChildren();
 
   emails.forEach((email, index) => {
     const row = document.createElement("tr");
-    row.dataset.id = email.id;
+    row.dataset.id = email.id ?? "";
 
-    row.innerHTML = `
-      <th>${index + 1}</th>
-      <td>${email.from}</td>
-      <td>${email.subject}</td>
-      <td>${formatDate(email.date)}</td>
-    `;
+    const indexCell = document.createElement("th");
+    indexCell.textContent = String(index + 1);
 
+    const fromCell = document.createElement("td");
+    fromCell.textContent = email.from ?? "-";
+
+    const subjectCell = document.createElement("td");
+    subjectCell.textContent = email.subject ?? "-";
+
+    const dateCell = document.createElement("td");
+    dateCell.textContent = formatDate(email.date ?? email.createdAt);
+
+    row.append(indexCell, fromCell, subjectCell, dateCell);
     tbody.appendChild(row);
   });
 }
@@ -39,7 +46,7 @@ export function choiceRows() {
 
   table.addEventListener("click", async (event) => {
     const row = event.target.closest("tr");
-    if (!row) return;
+    if (!row || !row.dataset.id) return;
 
     const id = row.dataset.id;
 
@@ -53,7 +60,7 @@ export function choiceRows() {
       });
     } catch (error) {
       console.error(error);
-      showToast("No se pudo abrir o eliminar el email.", emailListBtn);
+      showToast("No se pudo abrir el email.", emailListBtn);
     }
   });
 }
