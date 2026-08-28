@@ -102,6 +102,21 @@ const safeNetworkCause = (error) => {
   };
 };
 
+const normalizeInboxList = (data) => {
+  const source = Array.isArray(data) ? data : data?.inboxes;
+  if (!Array.isArray(source)) return [];
+
+  return source
+    .map((entry) => (typeof entry === "string" ? entry : entry?.inbox))
+    .filter((entry) => typeof entry === "string" && entry.length > 0);
+};
+
+const normalizeMessageList = (data) => {
+  if (Array.isArray(data)) return data;
+  if (Array.isArray(data?.messages)) return data.messages;
+  return [];
+};
+
 const proxyRequest = async (endpoint, res, options = {}) => {
   const { method = "GET", copyHeaders = [], transform } = options;
 
@@ -185,13 +200,12 @@ const server = createServer(async (req, res) => {
     await proxyRequest("/v1/inboxes", res, {
       copyHeaders: ["x-ratelimit-remaining-month"],
       transform: (result) => {
-        const inboxes = Array.isArray(result?.data?.inboxes) ? result.data.inboxes : [];
+        const inboxes = normalizeInboxList(result?.data);
         const configuredInboxes = inboxes.includes(EMAIL) ? [EMAIL] : [];
 
         return {
           ...result,
           data: {
-            ...(result?.data ?? {}),
             inboxes: configuredInboxes,
             count: configuredInboxes.length,
           },
@@ -202,7 +216,25 @@ const server = createServer(async (req, res) => {
   }
 
   if (req.url === "/api/inboxes/messages" && req.method === "GET") {
-    await proxyRequest(`/v1/inboxes/${ENCODED_EMAIL}/messages`, res);
+    await proxyRequest(`/v1/inboxes/${ENCODED_EMAIL}/messages`, res, {
+      transform: (result) => {
+        const messages = normalizeMessageList(result?.data);
+        const metadata =
+          result?.data && !Array.isArray(result.data) && typeof result.data === "object"
+            ? result.data
+            : {};
+
+        return {
+          ...result,
+          data: {
+            ...metadata,
+            inbox: metadata.inbox ?? EMAIL,
+            messages,
+            count: metadata.count ?? messages.length,
+          },
+        };
+      },
+    });
     return;
   }
 
